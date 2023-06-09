@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja" dir="ltr">
+  <head>
+    <style media="screen">
+      .btn-circle.btn-xl {
+        width: 70px;
+        height: 70px;
+        padding: 10px 16px;
+        border-radius: 35px;
+        font-size: 24px;
+        line-height: 1.33;
+      }
+      
+      .btn-circle {
+        width: 30px;
+        height: 30px;
+        padding: 6px 0px;
+        border-radius: 15px;
+        text-align: center;
+        font-size: 12px;
+        line-height: 1.42857;
+      }
+      
+      .jumbotron{
+        margin-top: 0px;
+        margin-bottom: 0px;
+      }
+      .jumbotron h1{
+        text-align: center;
+      }
+      
+      
+      </style>
+      
+  </head>
+  <body>
+    {% include "books/navbarstudent.html" %}
+    <br>
+
+
+<div class="col-10 offset-1">
+<h3>書籍検索</h3>
+<form method="GET" id="form1">
+    <div class="input-group">
+        <input type="text" name="keyword" size="31" placeholder="タイトル・著者・出版社を入力">
+        <button class="btn btn-outline-success" type="submit">検索</button>
+    </div>
+</form>
+<form method="GET" id="form2" >
+    <div class="input-group">
+        <input type="text" name="t">
+        <button class="btn btn-outline-success" type="submit">カテゴリー検索</button>
+    </div>
+</form>
+<table class="table table-striped table-bordered">
+<thead>    
+  <tr>
+    
+    <th>タイトル</th>
+    <th>著者</th>
+    <th>カテゴリー</th>
+    <th>出版社</th>
+    <th>詳細リンク</th>
+  </tr>
+</thead>
+<tbody>
+{% if book_search %}
+{% for keyword in book_search %}
+   <tr>
+   
+    <td>{{ keyword.name }}</td>
+    <td>{{ keyword.author }}</td>
+    <td>{{ keyword.category }}</td>
+    <td>{{ keyword.publisher }}</td>
+    <td><a href="{% url 'detail' id=keyword.id %}">詳細</a></td>
+   </tr>
+</tbody>
+{% endfor %} 
+{% else %}
+ <p>検索結果はありません。</p>
+{% endif %}
+</table>
+</div>
+{% include "books/footer.html" %}
+  </body>
+</html>

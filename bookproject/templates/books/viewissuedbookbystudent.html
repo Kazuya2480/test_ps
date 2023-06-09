@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ja" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
+
+<style media="screen">
+table.redTable {
+border: 2px solid #A40808;
+background-color: #EEE7DB;
+width: 100%;
+text-align: center;
+border-collapse: collapse;
+}
+table.redTable td, table.redTable th {
+border: 1px solid #AAAAAA;
+padding: 3px 2px;
+}
+table.redTable tbody td {
+font-size: 13px;
+}
+table.redTable tr:nth-child(even) {
+background: #F5C8BF;
+}
+table.redTable thead {
+background: #A40808;
+}
+table.redTable thead th {
+font-size: 19px;
+font-weight: bold;
+color: #FFFFFF;
+text-align: center;
+border-left: 2px solid #A40808;
+}
+table.redTable thead th:first-child {
+border-left: none;
+}
+
+table.redTable tfoot {
+font-size: 13px;
+font-weight: bold;
+color: #FFFFFF;
+background: #A40808;
+}
+table.redTable tfoot td {
+font-size: 13px;
+}
+table.redTable tfoot .links {
+text-align: right;
+}
+table.redTable tfoot .links a{
+display: inline-block;
+background: #FFFFFF;
+color: #A40808;
+padding: 2px 8px;
+border-radius: 5px;
+}
+</style>
+
+
+  </head>
+  <body>
+  {% include "books/navbarstudent.html" %}<br><br>
+  <h3 class="p-3 mb-2 bg-danger text-white" style = 'font-size: 50px;text-align:center;'>貸出状況</h3>
+  
+
+<div class="row">
+    {% if messages %}
+    <div class="container" style="margin-top:1rem;">
+       <div class="notification is-danger">
+         <button class="delete" type="button"></button>
+          {% for message in messages  %}
+            {% if forloop.counter <= 1 %}
+            <p> {{ message }}</p>
+            {% endif %}
+          {% endfor %}
+        </div>
+   </div>
+    {% endif %}
+  <div class="col-lg-5" style="padding-right:0px;">
+    {% if li1%}
+  <table class="table table-hover table-condensed table-striped table-bordered"  >
+     <thead>
+      <tr>
+       <th>タイトル</th>
+       <th>著者</th>
+       <th>ISBN</th>
+       <th>返却</th>
+       <th>場所</th>
+      </tr>
+     </thead>
+   <tfoot>
+  <tr>
+  <td colspan="5">
+  <div class="links"></div>
+  </td>
+  </tr>
+  </tfoot>
+  <tbody>
+    {% for t in li1 %}
+     <tr>
+      <td height="100px">  {{t.2}}</td>
+      <td height="100px">  {{t.3}}</td>
+      <td height="100px">  {{t.4}}</td>
+      <td height="100px">
+        <a class="btn btn-danger" href="{% url 'deleteissuedbookbystudent' isbn=t.4 %}">返却</a>
+      </td>
+      <td height="100px">  {{t.5}}</td>
+     </tr>
+    {% endfor %}
+    
+   
+    </tbody>
+   </table>
+
+</div>
+
+<div class="col-lg-5" style="padding-left:0px;" >
+
+      <table class="table table-hover table-condensed table-striped table-bordered">
+    <thead>
+    <tr>
+    <th>貸出日</th>
+    <th>返却期限日</th>
+    
+    
+    </tr>
+    </thead>
+    <tfoot>
+    <tr>
+    <td colspan="5">
+    <div class="links"></div>
+    </td>
+    </tr>
+    </tfoot>
+    <tbody>
+      {% for t in li2 %}
+      <tr>
+       <td height="100px">  {{t.0}}</td>
+       <td height="100px">  {{t.1}}</td>
+       
+      {% endfor %}
+      
+     </tr>
+    
+    </tbody>
+    </div>
+    </table>
+    {%else%}
+    <h1> 該当する書籍はありません。</h1>
+    {%endif%}
+
+</div></div>
+<script>
+    // notificationを×押下で閉じれるように。
+    for (const element of document.querySelectorAll('.notification > .delete')) {
+        element.addEventListener('click', e => {
+            e.target.parentElement.classList.add('is-hidden');
+        });
+    }
+</script>
+
+
+
+
+
+<br><br><br><br><br><br>
+<br><br><br>
+  {% include "books/footer.html" %}
+  </body>
+</html>

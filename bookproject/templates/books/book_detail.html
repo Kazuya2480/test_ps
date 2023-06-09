@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ja" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+
+
+<style media="screen">
+table.redTable {
+border: 2px solid #A40808;
+background-color: #EEE7DB;
+width: 100%;
+text-align: center;
+border-collapse: collapse;
+}
+table.redTable td, table.redTable th {
+border: 1px solid #AAAAAA;
+padding: 3px 2px;
+}
+table.redTable tbody td {
+font-size: 13px;
+}
+table.redTable tr:nth-child(even) {
+background: #F5C8BF;
+}
+table.redTable thead {
+background: #A40808;
+}
+table.redTable thead th {
+font-size: 19px;
+font-weight: bold;
+color: #FFFFFF;
+text-align: center;
+border-left: 2px solid #A40808;
+}
+table.redTable thead th:first-child {
+border-left: none;
+}
+
+table.redTable tfoot {
+font-size: 13px;
+font-weight: bold;
+color: #FFFFFF;
+background: #A40808;
+}
+table.redTable tfoot td {
+font-size: 13px;
+}
+table.redTable tfoot .links {
+text-align: right;
+}
+table.redTable tfoot .links a{
+display: inline-block;
+background: #FFFFFF;
+color: #A40808;
+padding: 2px 8px;
+border-radius: 5px;
+}
+</style>
+
+  </head>
+  <body>
+  {% include "books/navbarstudent.html" %}<br><br>
+  <h3 class="p-3 mb-2 bg-danger text-white" style = 'font-size: 50px;text-align:center;'>詳細</h3>
+  
+<div class="row">
+
+  <div class="col-lg-6" style="padding-right:0px;">
+    
+    <table class="table table-hover table-condensed table-striped table-bordered">
+  <thead>
+    <style>
+      li{
+        padding: 7px;
+        padding-left: 500px;
+      }
+     
+      .no-wrap{
+        display:inline-block;
+      }
+      img{
+        width: 230px;
+        height:340px;
+      }
+      @media (max-width:1200px){
+        img{
+            width: 180px;
+            height: 290px;
+        }
+        
+      }
+    </style>
+ 
+        <div style="position:absolute;top:5px;left: 125px;">
+        <img  src="{{ book.image.url }}"> 
+        </div>
+    
+       
+    </div>
+    <div class="geo" style="float: right;">
+     <li>タイトル：  <span class="no-wrap">{{ book.name }}</span></li>
+      <li>著者： {{ book.author }}</li>
+      <li>カテゴリー：{{ book.category }}</li>
+      <li>出版社：{{ book.publisher }}</li>
+      <li>出版日： {{ book.publisheddate|date:"Y/n/j"}}</li>
+      <li>{{ book.version }}</li>
+      <li>ISBN: {{ book.isbn }}</li>
+      <li>評価：{% if book.get_rating == 0 %}No rating{% else %}{{ book.get_rating|floatformat:1}}{% endif %}</li>
+     {% if rent %}
+      <li>状況： 貸出中</li>
+       {% if is_added %}
+       <li><p class="btn btn-danger">予約済みです</p></li>
+       {% else %}
+       <li><button id="add_book" type="button" class="btn btn-primary">予約する</button></li>
+       {% endif %}
+       <input name="csrfToken" value="{{ csrf_token }}" type="hidden">
+     {% else%}
+      {% if reserved %}
+       <li>状況：予約中</li>
+        {% if reserveuser %}
+        <li>貸出可</li>
+        <li><a href="{% url 'issuebook_confirm' id=book.id %}" class="btn btn-success">この本を借りる</a></li>
+        {% endif %}
+      {% else %}
+      
+      <li>状況：貸出可</li>
+      <li><a href="{% url 'issuebook_confirm' id=book.id %}" class="btn btn-success">この本を借りる</a></li>
+      {% endif %}
+         
+     {% endif %}
+    
+    
+     <style>
+    
+     div.notification.space-below{
+        position: relative;
+        top:160px;
+        padding-left: 500px;
+        
+     }
+     div.notification.space-below2{
+        position: absolute;
+        top: 980px;
+        padding-left: 500px;
+     }
+     div.notification.space-below3{
+        white-space: nowrap;
+        position: absolute;
+        top: 150px;
+       
+     }
+     
+     </style>
+     <div class="reviews-wrapper">
+      <div class="notification space-below">
+        <h4>レビューを投稿する</h4>
+         <form action="{% url 'detail' id=book.id  %}" method="POST">
+             {% csrf_token %}
+
+             <div class="field">
+                 <label>評価</label>
+
+                 <div class="control">
+                    <div class="select">
+                       <select name="stars">
+                           <option value="1">1</option>
+                           <option value="2">2</option>
+                           <option value="3" selected>3</option>
+                           <option value="4">4</option>
+                           <option value="5">5</option>
+                        </select>
+                    </div>
+                 </div> 
+             </div>
+
+             <div class="field">
+                <label>本文</label>
+
+                <div class="control">
+                    <textarea class="textarea" name="content"></textarea>
+                </div>
+              </div>
+
+              <div class="field">
+                  <div class="control">
+                       <button class="button is success">送信</button>
+                  </div>
+              </div>
+          </form>
+
+       
+        </div>
+        <div class="notification space-below2">
+        {% for rev in pages %}
+          {% if rev.book_id == book.id %}
+          
+         
+               <dl>
+                 <hr color="#000000" >
+                   <dt>User: {{ rev.user }}</dt>
+                   <dt>投稿日: {{ rev.data_added }}</dt>
+                   <dt>評価: {{ rev.stars }}</dt>
+               
+                </dl>
+         
+               {{ rev.content }}
+        
+          {% endif %}
+        {% empty %}
+        <div class="notification space-below3">
+              この書籍のレビューはまだありません。
+        </div>
+        {% endfor %}
+        {% if pages.has_other_pages %}
+         <nav aria-label="Page navigation example">
+             <ul class="pagination">
+              {% if pages.has_previous %}
+                 <li><a class="page-link text-primary d-inline-block" href="?page={{ pages.previous_page_number }}"><<</a></li>
+              {% else %}
+                 <li class="disabled"><div class="page-link text-secondary d-inline-block disabled" href="#"><<</div> </li>
+              {% endif %}
+
+              {% for page_num in pages.paginator.page_range %}
+                      {% if page_num %}
+                         {% if page_num == pages.number %}
+                            <li class="disabled"><div class="page-link text-secondary d-inline-block disabled" href="#">{{ page_num }}</div></li>
+                         {% else %}
+                            <li><a class="page-link text-primary d-inline-block" href="?page={{ page_num }}">{{ page_num }}</a></li>
+                         {% endif %}
+                      {% else %}
+                         <li class="disabled"><a class="page-link text-secondary d-inline-block text-muted" href="#">・・・</a></li>
+                      {% endif %}
+              {% endfor %}
+              
+              {% if pages.has_next %}
+                 <li><a class="page-link text-primary d-inline-block" href="?page={{ pages.next_page_number }}">>></a></li>
+              {% else %}
+                 <li class="disabled"><div class="page-link text-secondary d-inline-block disabled" href="#">>></div></li>
+              {% endif %}
+             </ul>
+         </nav>
+        {% endif %}
+        </div>
+        
+  </table>
+ 
+</div>
+
+
+</div>
+
+
+</div></div>
+<script>
+$('#add_book').click(function(){
+    var quantity = $("#quantity").val();
+    var token = $('input[name="csrfToken"]').attr('value');
+    $.ajaxSetup({
+        beforeSend: function(xhr){
+            xhr.setRequestHeader('X-CSRFToken', token);
+        }
+    })
+    $.ajax({
+        url: "{% url 'add_reservebook' %}",
+        type: "POST",
+        data: {id: "{{ book.id }}", isbn:"{{ book.isbn }}"},
+        dataType: "json",
+        success: function(json){
+            if(json.message){
+                $('#add_book').attr('class', 'btn btn-danger');
+                $('#add_book').html('予約済みです');
+                $('#add_book').prop('disabled', true);
+                alert(json.message);
+            }
+        },
+        error: function(json){
+            alert('既に予約済みです');
+        }
+    });
+});
+</script>
+
+
+
+
+
+<br><br><br><br><br><br>
+<br><br><br>
+  {% include "books/footer.html" %}
+  </body>
+</html>

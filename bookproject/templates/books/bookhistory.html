@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+
+
+<style media="screen">
+table.redTable {
+border: 2px solid #A40808;
+background-color: #EEE7DB;
+width: 100%;
+text-align: center;
+border-collapse: collapse;
+}
+table.redTable td, table.redTable th {
+border: 1px solid #AAAAAA;
+padding: 3px 2px;
+}
+table.redTable tbody td {
+font-size: 13px;
+}
+table.redTable tr:nth-child(even) {
+background: #F5C8BF;
+}
+table.redTable thead {
+background: #A40808;
+}
+table.redTable thead th {
+font-size: 19px;
+font-weight: bold;
+color: #FFFFFF;
+text-align: center;
+border-left: 2px solid #A40808;
+}
+table.redTable thead th:first-child {
+border-left: none;
+}
+
+table.redTable tfoot {
+font-size: 13px;
+font-weight: bold;
+color: #FFFFFF;
+background: #A40808;
+}
+table.redTable tfoot td {
+font-size: 13px;
+}
+table.redTable tfoot .links {
+text-align: right;
+}
+table.redTable tfoot .links a{
+display: inline-block;
+background: #FFFFFF;
+color: #A40808;
+padding: 2px 8px;
+border-radius: 5px;
+}
+</style>
+
+  </head>
+  <body>
+  {% include "books/navbarstudent.html" %}<br><br>
+  <h3 class="p-3 mb-2 bg-success text-white" style = 'font-size: 30px;text-align:center;'>貸出履歴</h3>
+  <div class="container">
+    <table class="table table-hover table-condensed table-striped table-bordered">
+      <thead>
+      <tr>
+      <th>タイトル</th>
+      <th>著者</th>
+      <th>出版社</th>
+      <th>貸出日</th>
+      </tr> 
+      {% for i in pages %}
+      <tr>
+        <td>{{ i.book.name }}</td>
+        <td>{{ i.book.author }}</td>
+        <td>{{ i.book.publisher }}</td>
+        <td>{{ i.created_at }}</td>
+      </tr>
+      {% endfor %}
+      
+      {% if pages.has_other_pages %}
+         <nav aria-label="Page navigation example">
+             <ul class="pagination">
+              {% if pages.has_previous %}
+                 <li><a class="page-link text-primary d-inline-block" href="?page={{ pages.previous_page_number }}"><<</a></li>
+              {% else %}
+                 <li class="disabled"><div class="page-link text-secondary d-inline-block disabled" href="#"><<</div> </li>
+              {% endif %}
+
+              {% for page_num in pages.paginator.page_range %}
+                      {% if page_num %}
+                         {% if page_num == pages.number %}
+                            <li class="disabled"><div class="page-link text-secondary d-inline-block disabled" href="#">{{ page_num }}</div></li>
+                         {% else %}
+                            <li><a class="page-link text-primary d-inline-block" href="?page={{ page_num }}">{{ page_num }}</a></li>
+                         {% endif %}
+                      {% else %}
+                         <li class="disabled"><a class="page-link text-secondary d-inline-block text-muted" href="#">・・・</a></li>
+                      {% endif %}
+              {% endfor %}
+              
+              {% if pages.has_next %}
+                 <li><a class="page-link text-primary d-inline-block" href="?page={{ pages.next_page_number }}">>></a></li>
+              {% else %}
+                 <li class="disabled"><div class="page-link text-secondary d-inline-block disabled" href="#">>></div></li>
+              {% endif %}
+             </ul>
+         </nav>
+        {% endif %}
+       
+      </thead> 
+    </table>
+  </div>
+ 
+ 
+  {% include "books/footer.html" %}
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja" dir="ltr">
+  <head>
+
+  </head>
+  <body>
+    {% include "books/navbarstudent.html" %}
+    <br>
+    <br>
+<style>
+    .list p{
+        padding: 20px
+    }
+    .list .col {
+        display:inline-block;
+        width: 140px;
+        line-height: 20px;
+    }
+</style>
+<h3 class="p-3 mb-2 bg-success text-white" style = 'font-size: 30px;text-align:center;'>貸出登録完了</h3>
+<br><br>
+{% for book in book %}
+<div class="list">
+    <p>
+        <span class="col">本の名前</span>:
+        {{ book.name }}<br>
+        <span class="col">本の場所</span>:
+        {{ book.place }}<br>
+    </p>
+</div>
+{% endfor %}
+<div class="options" style="text-align:center">
+  <a href="afterlogin" class="btn btn-primary btn-lg active" style="border-radius: 0%;" role="button" aria-pressed="true">ホーム</a><br><br>
+
+</div>
+<p>※貸出中の書籍は貸出状況一覧ページから返却できます。</p>
+<br>
+{% include "books/footer.html" %}
+  </body>
+</html>

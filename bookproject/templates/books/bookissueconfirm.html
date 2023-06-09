@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja" dir="ltr">
+  <head>
+
+  </head>
+  <body>
+    {% include "books/navbarstudent.html" %}
+    <br>
+    <br>
+
+<h3 class="p-3 mb-2 bg-success text-white" style = 'font-size: 30px;text-align:center;'>貸出確認</h3>
+<br><br>
+<div class="options" style="text-align:center">
+  {% for i in book %}
+  <p>{{i.name}}</p>
+  <a href="{% url 'bookissuedfinish' id=i.id%}" class="btn btn-primary btn-lg active" style="border-radius: 0%;" role="button" aria-pressed="true">この本を借りる</a><br><br>
+  {% endfor %}
+  <section>
+    <p><a href="{{request.META.HTTP_REFERER}}">前のページに戻る</a></p>
+  </section>
+</div>
+<br>
+{% include "books/footer.html" %}
+  </body>
+</html>

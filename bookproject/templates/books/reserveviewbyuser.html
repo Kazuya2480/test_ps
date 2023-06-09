@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+
+
+<style media="screen">
+table.redTable {
+border: 2px solid #A40808;
+background-color: #EEE7DB;
+width: 100%;
+text-align: center;
+border-collapse: collapse;
+}
+table.redTable td, table.redTable th {
+border: 1px solid #AAAAAA;
+padding: 3px 2px;
+}
+table.redTable tbody td {
+font-size: 13px;
+}
+table.redTable tr:nth-child(even) {
+background: #F5C8BF;
+}
+table.redTable thead {
+background: #A40808;
+}
+table.redTable thead th {
+font-size: 19px;
+font-weight: bold;
+color: #FFFFFF;
+text-align: center;
+border-left: 2px solid #A40808;
+}
+table.redTable thead th:first-child {
+border-left: none;
+}
+
+table.redTable tfoot {
+font-size: 13px;
+font-weight: bold;
+color: #FFFFFF;
+background: #A40808;
+}
+table.redTable tfoot td {
+font-size: 13px;
+}
+table.redTable tfoot .links {
+text-align: right;
+}
+table.redTable tfoot .links a{
+display: inline-block;
+background: #FFFFFF;
+color: #A40808;
+padding: 2px 8px;
+border-radius: 5px;
+}
+</style>
+
+  </head>
+  <body>
+  {% include "books/navbarstudent.html" %}<br><br>
+  <h3 class="p-3 mb-2 bg-danger text-white" style = 'font-size: 50px;text-align:center;'>予約一覧</h3>
+
+<div class="row">
+
+  <div class="col-lg-6" style="padding-right:0px;">
+    
+    <table class="table table-hover table-condensed table-striped table-bordered">
+     <thead>
+       <tr>
+          <th></th>
+          <th>タイトル</th>
+          <th>著者</th>
+          <th>出版社</th>
+          <th>予約日</th>
+          <th></th>
+       </tr>
+     </thead>
+  <tbody>
+    {% if items %}
+       {% for item in items %}
+       <tr>
+          <td style="width:20%">
+            {% if item.picture %}
+            <img width="45px" height="79px" src="{{ item.picture.url }}">
+          </td>
+        {% endif %}
+        
+        <td>{{ item.name }}</td>
+        <td>{{ item.author }}</td>
+        <td>{{ item.publisher }}</td>
+        <td>{{ item.date|date:"Y/n/j"}}</td>
+        <td class="change">
+            <a class="btn btn-danger" href="{% url 'reservebook_delete' pk=item.id %}">予約取消</a>
+        </td>
+        
+       </tr>
+       {% endfor %}
+    {% endif %}
+    </div>
+  </tbody>
+  {% for i in issued%}
+    {{i.isbn}}
+  {%endfor%}
+    </table>
+</div>
+{% include "books/footer.html" %}
+  </body>
+</html>

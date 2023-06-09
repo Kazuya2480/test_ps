@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-CK9PC4CD47"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'UA-28042024-1');
+gtag('config', 'G-CK9PC4CD47');
+</script>
+<meta charset="UTF-8">
+<meta name="robots" content="none">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#000000">
+<title>バーコード読み込みサンプル</title>
+<link href="https://iwb.jp/s/common.css" rel="stylesheet">
+<style>
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+}
+h1 {
+  font-size: 1rem;
+}
+input {
+  display:block;
+  width: 300px;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+}
+label{
+  padding-left: 10px;
+  border-left: solid 3px #FF6701;
+}
+.modal {
+  display: none;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+}
+.text {
+  position: fixed;
+  bottom: 1rem;
+  left: 0;
+  width: 100%;
+  margin-top: 1rem;
+  color: #fff;
+  text-align: center;
+}
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script>hljs.highlightAll();</script>
+</head>
+<body style="background-color:#EEEEEE;">
+    {% include "books/navbaradmin.html" %}
+<style>
+    div.example1{
+        position: relative;
+        top: 75px;
+        left: 35%;
+        width: 470px;
+       
+    }
+    form{
+      width: 470px;
+    }
+    div.item{
+      margin-bottom: 20px;
+      width: 300px;
+     
+    }
+    button.submit{
+      padding: 0.5em 1em;
+      text-decoration: none;
+      background: #32b16c;
+      color: #FFF;
+      margin-bottom: 4px;
+      width: 99.2px;
+    }
+    .submit:hover{
+      opacity:0.8;
+      cursor: pointer;
+      text-decoration: none;
+      
+    }
+    button.reset{
+      padding: 0.5em 1em;
+      text-decoration: none;
+      background: red;
+      color: #FFF;
+      margin-left: 98px;
+      margin-bottom: 4px;
+    }
+    .reset:active{
+      box-shadow:inset -2px -2px 3px rgba(255, 255, 255, .6),
+      inset 2px 2px 3px rgba(0, 0, 0, .6);
+    }
+
+    .reset:hover{
+      background-color: #fa4c46;
+    }
+
+    
+    h3{
+      display:flex;
+      align-items: center;
+    }
+    h3::before,
+    h3::after{
+      content:'';
+      height: 1px;
+      background-color: #333;
+      flex-grow: 1;
+    }
+    h3::before{
+      margin-right: 1rem;
+    }
+    h3::after{
+      margin-left: 1rem;
+    }
+    button.button-31 {
+     background-color: #222;
+     border-radius: 4px;
+     border-style: none;
+     box-sizing: border-box;
+     color: #fff;
+     cursor: pointer;
+     display: inline-block;
+     font-family: "Farfetch Basis","Helvetica Neue",Arial,sans-serif;
+     font-size: 16px;
+     font-weight: 700;
+     line-height: 1.5;
+     margin: 0;
+     max-width: none;
+     min-height: 44px;
+     min-width: 10px;
+     outline: none;
+     overflow: hidden;
+     padding: 9px 20px 8px;
+     position: relative;
+     text-align: center;
+     text-transform: none;
+     user-select: none;
+     -webkit-user-select: none;
+     touch-action: manipulation;
+     width: 100%;
+    }
+
+    button.button-31:hover,
+    button.button-31:focus {
+    opacity: .75;
+    }
+   
+  
+</style>
+<div class="example1">  
+<div class="item">
+  <h3>書籍登録</h3>
+  
+</div>
+
+  
+  
+  
+
+
+
+<div class="item">
+  <button id="btn" class="button-31">カメラでバーコードを読み込む</button>
+</div>
+
+<div id="modal" class="modal">
+  <div id="interactive" class="viewport"></div>
+  <p class="text">カメラにバーコードを写してください。</p>
+</div>
+
+  <form method="post" enctype="multipart/form-data">
+     {% csrf_token %} 
+    <div class="item">
+       <label>ISBN13</label>
+       <input id="isbn" type="text" name="isbn" value="" autofocus>
+        <button id="getBookInfo" class="btn btn-secondary">書籍情報取得</button>
+    </div>
+    <div class="item">
+     <p id="thumbnail"></p>
+    </div>
+
+
+    <div class="item" >
+      <label>書籍名</label>
+      <input id="title" type="text" name="name" value="">
+    </div>
+
+    <div class="item">
+      <label>出版社</label>
+      <input id="publisher" type="text" name="publisher" value="" >
+    </div>
+
+    <div class="item">
+      <label>著者</label>
+      <input id="author" type="text" name="author" value="" >
+    </div>
+
+    <div class="item">
+     {{ form }}
+    </div>
+
+    <div class="item">
+      <label>出版日</label>
+      <input id="pubdate" type="text"  name="publisheddate" value="" >
+    </div>
+
+    <div class="item">
+      <label>画像URL</label>
+      <input id="cover" type="text" name="cover" value="" >
+    </div>
+
+    <div class="item">
+      <label>画像</label>
+      
+        <input id="image" type="file" name="image">
+    </div>
+
+    <div class="item">
+      <label>版数</label>
+      <input id="version" type="text" name="version" value="">
+   </div>
+
+   <div class="item">
+      <label>保存場所</label> 
+      <input id="place" type="text" name="place" value="">
+   </div>
+
+    <div class="formbutton grid-gap ">
+        
+        <button type="submit" class="submit">登録</button>
+        <button type="reset" class="reset">リセット</button> 
+  
+<script src="https://serratus.github.io/quaggaJS/examples/js/quagga.min.js"></script>
+<script>
+
+    const btn = document.getElementById('btn');
+    const modal = document.getElementById('modal');
+    
+    btn.addEventListener('click', () => {
+      modal.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+      Quagga.init(
+        {
+          inputStream: {
+            type: 'LiveStream',
+            constraints: {
+              width: window.innerWidth
+            },
+          },
+          decoder: {
+            readers: [
+              {
+                format: 'ean_reader',
+                config: {},
+              },
+            ],
+          },
+        },
+        (err) => {
+          if (!err) {
+            Quagga.start();
+          } else {
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+            Quagga.stop();
+            alert(
+              'この機能を利用するには\nブラウザのカメラ利用を許可してください。'
+            );
+          }
+        }
+      );
+    });
+    
+    Quagga.onDetected((result) => {
+      const code = result.codeResult.code;
+      if (/^97/.test(code)){
+       document.getElementById('isbn').value = code;
+       modal.style.display = 'none';
+       document.body.style.overflow = '';
+       Quagga.stop();
+      }
+    });
+    </script>
+<script>
+    $(function() {
+        $('#getBookInfo').click( function( e ) {
+            e.preventDefault();
+            const isbn = $("#isbn").val();
+            const url = "https://api.openbd.jp/v1/get?isbn=" + isbn;
+            $.getJSON( url, function( data ) {
+                if( data[0] == null ) {
+                    alert("データが見つかりません");
+                } else {
+                    if( data[0].summary.cover == "" ){
+                        $("#thumbnail").html('<img src=\"\" />');
+                    } else {
+                        $("#thumbnail").html('<img src=\"' + data[0].summary.cover + '\" style=\"border:solid 1px #000000\" />');
+                    }
+                    $("#title").val(data[0].summary.title);
+                    $("#publisher").val(data[0].summary.publisher);
+                    $("#volume").val(data[0].summary.volume);
+                    $("#series").val(data[0].summary.series);
+                    $("#author").val(data[0].summary.author);
+                    $("#pubdate").val(data[0].summary.pubdate);
+                    $("#cover").val(data[0].summary.cover);
+                    $("#description").val(data[0].onix.CollateralDetail.TextContent[0].Text);
+                }
+            });
+        });
+    });
+</script>
+</form>
+</div>
+</body>
+</html>
